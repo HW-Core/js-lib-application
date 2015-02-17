@@ -1,0 +1,10 @@
+{
+  "name": "hw2/modules/js/src/library/application/doc",
+  "dependencies": {
+    "%parent": "hw2-core/js-library-application"
+  },
+  "keep": [
+    ".git/config"
+  ],
+  "license": "http://www.hyperweb2.com/terms"
+}
