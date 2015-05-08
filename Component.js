@@ -1,8 +1,3 @@
-/*
- * Copyright (C) 2007 - 2014 Hyperweb2 All rights reserved.
- * GNU General Public License version 3; see www.hyperweb2.com/terms/
- */
-
 'use strict';
 
 hw2.define([
@@ -12,12 +7,21 @@ hw2.define([
     var $ = this;
 
     return $.Component = $.public.abstract.class.extends($.Object)(
+        $.protected.static({
+            stateType: {
+                INIT: 0,
+                UPDATE: 1
+            }
+        }),
         $.protected({
             // component tree
             parent: null,
             childs: null,
             eventHandler: null,
-            opt: null
+            opt: null,
+            // mainly needed to differentiate 
+            // operations in "build" process
+            state: null
         }),
         $.public({
             /**
@@ -31,27 +35,28 @@ hw2.define([
             },
             init: function () {
                 var that = this;
+                this.i.state = this.s.stateType.INIT;
 
                 if (Array.isArray(that.i.childs)) {
                     var promises = [];
                     for (var key in that.i.childs) {
                         var child = that.i.childs[key];
-                        promises.push(that.s.load(child.module, that.i, null, child.opt));
+                        promises.push(that.s.load(child.module, child.id, that.i, null, child.opt, arguments));
                     }
 
                     return $.Async.all(promises).then(function () {
+                        that.i.build.apply(that, arguments);
                         return true;
                     });
                 }
 
-                this.i.build();
-
                 return true;
             },
             update: function () {
+                this.i.state = this.s.stateType.INIT;
                 this.i.eventHandler.trigger("update", arguments);
 
-                this.i.build();
+                this.i.build.apply(this, arguments);
             },
             build: function () {
 
@@ -59,53 +64,61 @@ hw2.define([
             __destruct: function () {
                 this.i.eventHandler.trigger("__destruct");
 
-                delete this.i.eventHandler;
+                //delete this.i.eventHandler;
 
                 this.__super();
             },
-            bindChild: function (child) {
+            unbindChild: function (id) {
+                var obj = this.i.eventHandler.unbind(id);
+
+                if (obj && obj.__isClass)
+                    delete obj.__destruct();
+            },
+            bindChild: function (id, child) {
                 if (!child instanceof $.Component)
                     throw new Error("child is not an instance of Component");
 
-                this.i.eventHandler.bind(child);
+                this.i.eventHandler.bind(child, id);
             }
         }),
         $.public.static({
             /**
              * 
              * @param {String|Object} component : the path of component or the object to initialize
-             * @param {type} parent
-             * @param {type} childs
-             * @param {type} opt
+             * @param {String} id (Optional) : undique name to identify component in parent child list
+             * @param {type} parent (Optional)
+             * @param {type} childs (Optional)
+             * @param {type} opt (Optional)
+             * @param {type} args (Optional)
              * @returns {Boolean}
              */
-            load: function (component, parent, childs, opt) {
+            load: function (component, id, parent, childs, opt, args) {
                 function init (M) {
                     if (M.__isClass && M.__isChildOf($.Component)) {
                         var m = new M(parent, childs, opt);
 
                         if (parent)
-                            parent.bindChild(m);
+                            parent.bindChild(id, m);
 
-                        return m.init();
+                        return m.init.apply(m, args);
                     }
 
                     return false;
                 }
 
                 if (typeof component === "string") {
-                    return $.Browser.Loader.load(component)
-                            .then(function (M) {
-                                var res = init(M, parent, childs, opt);
-                                if (res === false)
-                                    throw new Error("Passed object is not a Component");
+                    return $.Browser.include(component)
+                        .then(function (M) {
+                            var res = init(M[0], parent, childs, opt);
+                            if (res === false)
+                                throw new Error("Passed object is not a Component");
 
-                                return res;
-                            });
+                            return res;
+                        });
                 } else {
                     return init(component);
                 }
             }
         })
-    );
+        );
 });
