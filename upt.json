@@ -1,7 +1,7 @@
 {
-  "name": "hw2/modules/js/src/library/application/tests",
+  "name": "hwcore/modulesjs/src/library/application/tests",
   "dependencies": {
-    "%parent": "hw2-core/js-library-application"
+    "%parent": "hw-core/js-library-application"
   },
   "keep": [
     ".git/config"
