@@ -1,8 +1,8 @@
 {
-  "name": "hw2/modules/js/src/library/application",
+  "name": "hwcore/modulesjs/src/library/application",
   "devDependencies": {
-    "%tests": "hw2-core/js-library-application#tests",
-    "%doc": "hw2-core/js-library-application#gh-pages"
+    "%tests": "hw-core/js-library-application#tests",
+    "%doc": "hw-core/js-library-application#gh-pages"
   },
   "keep": [
     ".git/config"

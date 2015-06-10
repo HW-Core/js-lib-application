@@ -5,10 +5,10 @@
 
 'use strict';
 
-hw2.define([
-    'hw2!{PATH_JS_LIB}application/include.js',
-    'hw2!{PATH_JS_LIB}application/Component.js',
-    'hw2!{PATH_JS_LIB}application/System.js'
+hwc.define([
+    'hwc!{PATH_JS_LIB}application/include.js',
+    'hwc!{PATH_JS_LIB}application/Component.js',
+    'hwc!{PATH_JS_LIB}application/System.js'
 ],function () {
     var $ = this;
 });

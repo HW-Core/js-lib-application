@@ -1,8 +1,8 @@
 'use strict';
 
-hw2.define([
-    "hw2!{PATH_JS_LIB}application/include.js",
-    "hw2!{PATH_JS_LIB}event/EventHandler.js"
+hwc.define([
+    "hwc!{PATH_JS_LIB}application/include.js",
+    "hwc!{PATH_JS_LIB}event/EventHandler.js"
 ], function () {
     var $ = this;
 
@@ -109,7 +109,7 @@ hw2.define([
                 if (typeof component === "string") {
                     return $.Browser.include(component)
                         .then(function (M) {
-                            var res = init(M[0], parent, childs, opt);
+                            var res = init(M, parent, childs, opt);
                             if (res === false)
                                 throw new Error("Passed object is not a Component");
 
