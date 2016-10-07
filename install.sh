@@ -11,7 +11,7 @@ VENDOR="hw-core"
 # ADD DEPENDENCIES
 #
 
-Joiner:add_repo "https://github.com/HW-Core/js-library-class.git" "js-library-class" "master" "$VENDOR"
+Joiner:add_repo "https://github.com/HW-Core/js-lib-class.git" "js-lib-class" "master" "$VENDOR"
 
 if Joiner:with_dev ; then
     Joiner:add_repo "https://github.com/HW-Core/$NAME.git" "$NAME/tests" "tests" "$VENDOR"
